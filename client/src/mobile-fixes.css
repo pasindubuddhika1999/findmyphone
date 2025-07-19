@@ -1,0 +1,110 @@
+/* Mobile-specific fixes */
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Fix for all screens */
+.text-gradient {
+  word-break: break-word;
+}
+
+/* Mobile specific fixes */
+@media (max-width: 640px) {
+  /* Fix text overflow */
+  h1, h2, h3, h4, h5, h6, p, span {
+    word-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+  
+  /* Fix button sizing */
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Fix card padding */
+  .card {
+    padding: 1rem;
+  }
+  
+  /* Fix main content padding */
+  main {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  /* Fix hero section */
+  .hero-section {
+    padding: 1.5rem 0.5rem !important;
+  }
+  
+  .hero-section h1 {
+    font-size: 1.75rem !important;
+    line-height: 2rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  .hero-section p {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+  
+  .hero-section .text-gradient {
+    font-size: 1.5rem !important;
+    line-height: 1.75rem !important;
+  }
+  
+  /* Fix grid layouts */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Fix images */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Fix search form */
+  form[class*="space-y"] input,
+  form[class*="space-y"] button {
+    font-size: 0.875rem;
+  }
+  
+  /* Fix nav items */
+  .nav-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Fix footer */
+  footer {
+    text-align: center;
+  }
+  
+  footer .grid {
+    gap: 2rem;
+  }
+}
+
+/* Fix for very small screens */
+@media (max-width: 360px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .hero-section h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .card {
+    padding: 0.75rem;
+  }
+} 

@@ -1,0 +1,25 @@
+{
+  "short_name": "Find My Phone.lk",
+  "name": "Find My Phone.lk - Lost Phone Reporting Platform",
+  "icons": [
+    {
+      "src": "images/logo.svg",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "images/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#ffffff"
+} 

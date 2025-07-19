@@ -1,0 +1,95 @@
+/* Mobile-specific fixes */
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+/* Fix for all screens */
+.text-gradient {
+  word-break: break-word;
+}
+
+/* Mobile specific fixes */
+@media (max-width: 640px) {
+  /* Fix text overflow */
+  h1, h2, h3, h4, h5, h6, p, span {
+    word-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+  }
+  
+  /* Fix button sizing */
+  .btn-primary, .btn-secondary {
+    width: 100% !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Fix card padding */
+  .card {
+    padding: 1rem !important;
+  }
+  
+  /* Fix main content padding */
+  main {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+  
+  /* Fix hero section */
+  section[class*="py-"] {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  h1[class*="text-"] {
+    font-size: 1.75rem !important;
+    line-height: 2rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  p[class*="text-"] {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+  
+  .text-gradient {
+    font-size: 1.5rem !important;
+    line-height: 1.75rem !important;
+  }
+  
+  /* Fix grid layouts */
+  div[class*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Fix images - but preserve logo sizing */
+  img:not([src*="logo"]) {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Ensure logo is visible and properly sized on mobile */
+  img[src*="logo"],
+  .mobile-logo {
+    max-width: none !important;
+    height: 48px !important;
+    width: auto !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Additional mobile logo fixes */
+  .mobile-logo {
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+}
