@@ -7,11 +7,14 @@
       "use": "@vercel/node"
     },
     {
-      "src": "src/**/**",
+      "src": "src/**/*",
       "use": "@vercel/static"
-    },
+    }
+  ],
+  "routes": [
     {
-      "routes": [{ "src": "/(.*)", "dest": "/" }]
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 }
