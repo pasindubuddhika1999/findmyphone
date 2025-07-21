@@ -34,15 +34,15 @@ const PostCard = ({ post }) => {
     <Link to={`/posts/${post._id}`} className="block">
       <div className="card hover:shadow-md transition-shadow duration-200 h-full">
         {/* Image */}
-        <div className="relative mb-4">
+        <div className="relative mb-4 flex items-center justify-center bg-gray-100 rounded-lg" style={{ height: '200px' }}>
           {post.images && post.images.length > 0 ? (
             <img
               src={post.images[0].url}
               alt={post.title}
-              className="w-full h-48 object-cover rounded-lg"
+              className="max-h-full max-w-full h-auto w-auto object-contain rounded-lg"
             />
           ) : (
-            <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
               <PhoneIcon className="h-12 w-12 text-gray-400" />
             </div>
           )}

@@ -228,11 +228,11 @@ const PostDetailPage = () => {
         {/* Images */}
         {post.images && post.images.length > 0 && (
           <div className="mb-6">
-            <div className="relative">
+            <div className="relative flex items-center justify-center bg-gray-100 rounded-lg" style={{ height: "400px" }}>
               <img
                 src={post.images[currentImageIndex].url}
                 alt={post.title}
-                className="w-full h-96 object-cover rounded-lg"
+                className="max-h-full max-w-full h-auto w-auto object-contain rounded-lg"
               />
               
               {/* Image Navigation */}
@@ -261,14 +261,14 @@ const PostDetailPage = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`w-16 h-16 rounded-lg overflow-hidden border-2 ${
+                    className={`w-16 h-16 rounded-lg overflow-hidden border-2 flex items-center justify-center bg-gray-100 ${
                       currentImageIndex === index ? 'border-primary-500' : 'border-gray-200'
                     }`}
                   >
                     <img
                       src={image.url}
                       alt={`${post.title} ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="max-h-full max-w-full h-auto w-auto object-contain"
                     />
                   </button>
                 ))}

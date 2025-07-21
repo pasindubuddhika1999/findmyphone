@@ -244,9 +244,8 @@ const CreatePostPage = () => {
       newErrors['contactInfo.phone'] = 'Contact phone is required';
     }
 
-    if (!formData.contactInfo.email.trim()) {
-      newErrors['contactInfo.email'] = 'Contact email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.contactInfo.email)) {
+    // Email is optional, but if provided, it should be valid
+    if (formData.contactInfo.email.trim() && !/\S+@\S+\.\S+/.test(formData.contactInfo.email)) {
       newErrors['contactInfo.email'] = 'Valid email is required';
     }
 
@@ -947,7 +946,7 @@ const CreatePostPage = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Contact Email *
+                  Contact Email (Optional)
                 </label>
                 <input
                   type="email"
@@ -955,7 +954,7 @@ const CreatePostPage = () => {
                   value={formData.contactInfo.email}
                   onChange={handleChange}
                   className={`input-field ${errors['contactInfo.email'] ? 'border-red-500' : ''}`}
-                  placeholder="Your email address"
+                  placeholder="Your email address (optional)"
                 />
                 {errors['contactInfo.email'] && (
                   <p className="mt-1 text-sm text-red-600">{errors['contactInfo.email']}</p>

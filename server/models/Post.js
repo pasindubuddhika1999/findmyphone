@@ -19,8 +19,7 @@ const postSchema = new mongoose.Schema({
     trim: true,
     uppercase: true,
     minlength: 15,
-    maxlength: 15,
-    match: /^\d{15}$/
+    maxlength: 15
   },
   phoneModel: {
     type: String,
@@ -39,16 +38,6 @@ const postSchema = new mongoose.Schema({
     required: true,
     trim: true,
     maxlength: 30
-  },
-  district: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  town: {
-    type: String,
-    required: true,
-    trim: true
   },
   lostLocation: {
     type: String,
@@ -74,7 +63,7 @@ const postSchema = new mongoose.Schema({
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
       lowercase: true
     }

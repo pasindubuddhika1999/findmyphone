@@ -31,9 +31,7 @@ const RegisterPage = () => {
     }
 
     // Email validation
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
 
@@ -51,8 +49,10 @@ const RegisterPage = () => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    // Phone number validation (optional)
-    if (formData.phoneNumber && !/^\+?\d{9,15}$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
+    // Phone number validation
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = 'Phone number is required';
+    } else if (!/^\+?\d{9,15}$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
       newErrors.phoneNumber = 'Please enter a valid phone number';
     }
 
@@ -88,7 +88,7 @@ const RegisterPage = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        ...(formData.phoneNumber && { phoneNumber: formData.phoneNumber }),
+        phoneNumber: formData.phoneNumber,
       };
       
       await register(userData);
@@ -149,7 +149,7 @@ const RegisterPage = () => {
 
             <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                Email address (Optional)
               </label>
                   <div className="mt-1">
               <input
@@ -157,7 +157,6 @@ const RegisterPage = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                required
                 value={formData.email}
                 onChange={handleChange}
                       className={`block w-full px-3 py-2 placeholder-gray-400 border ${
@@ -247,7 +246,7 @@ const RegisterPage = () => {
 
             <div>
                   <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                    Phone Number <span className="text-gray-500 text-xs">(Optional)</span>
+                    Phone Number
               </label>
                   <div className="mt-1">
               <input
@@ -255,6 +254,7 @@ const RegisterPage = () => {
                 name="phoneNumber"
                 type="tel"
                 autoComplete="tel"
+                required
                 value={formData.phoneNumber}
                 onChange={handleChange}
                       className={`block w-full px-3 py-2 placeholder-gray-400 border ${

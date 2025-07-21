@@ -326,6 +326,42 @@ router.get('/search/imei/:imei', optionalAuth, async (req, res) => {
   }
 });
 
+// Get all districts (public endpoint)
+router.get('/districts', async (req, res) => {
+  try {
+    console.log('Fetching all districts...');
+    const districts = await District.find({ isActive: true }).sort({ name: 1 });
+    console.log('Found districts:', districts.length);
+    res.json(districts);
+  } catch (error) {
+    console.error('Error fetching districts:', error);
+    res.status(500).json({ message: 'Failed to fetch districts' });
+  }
+});
+
+// Get towns by district (public endpoint)
+router.get('/towns', async (req, res) => {
+  try {
+    const { districtId } = req.query;
+    
+    if (!districtId) {
+      return res.status(400).json({ message: 'District ID is required' });
+    }
+    
+    console.log('Fetching towns for district:', districtId);
+    const towns = await Town.find({ 
+      district: districtId,
+      isActive: true 
+    }).sort({ name: 1 });
+    
+    console.log('Found towns:', towns.length);
+    res.json(towns);
+  } catch (error) {
+    console.error('Error fetching towns:', error);
+    res.status(500).json({ message: 'Failed to fetch towns' });
+  }
+});
+
 // Get single post - MUST BE AFTER ALL OTHER GET ROUTES WITH SPECIFIC PATHS
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
@@ -348,18 +384,51 @@ router.get('/:id', optionalAuth, async (req, res) => {
 });
 
 // Create new post (requires auth)
-router.post('/', authenticateToken, upload.array('images', 5), async (req, res) => {
+router.post('/', authenticateToken, upload.array('images', 5), [
+  body('title')
+    .isLength({ min: 5, max: 100 })
+    .withMessage('Title must be between 5 and 100 characters'),
+  body('description')
+    .isLength({ min: 10, max: 1000 })
+    .withMessage('Description must be between 10 and 1000 characters'),
+  body('imei')
+    .isLength({ min: 15, max: 15 })
+    .withMessage('IMEI must be exactly 15 characters')
+    .matches(/^[0-9]+$/)
+    .withMessage('IMEI must contain only numbers'),
+  body('phoneModel')
+    .notEmpty()
+    .withMessage('Phone model is required'),
+  body('brand')
+    .notEmpty()
+    .withMessage('Brand is required'),
+  body('color')
+    .notEmpty()
+    .withMessage('Color is required'),
+  body('lostLocation')
+    .notEmpty()
+    .withMessage('Lost location is required'),
+  body('lostDate')
+    .isISO8601()
+    .withMessage('Valid lost date is required'),
+  body('contactInfo.name')
+    .notEmpty()
+    .withMessage('Contact name is required'),
+  body('contactInfo.phone')
+    .notEmpty()
+    .withMessage('Contact phone is required'),
+  body('contactInfo.email')
+    .optional({ checkFalsy: true })
+    .isEmail()
+    .withMessage('Valid contact email is required')
+], async (req, res) => {
   try {
-    const { title, description, imei, brand, phoneModel, color, district, town, lostLocation, lostDate } = req.body;
-    const contactInfo = {
-      name: req.body['contactInfo[name]'],
-      phone: req.body['contactInfo[phone]'],
-      email: req.body['contactInfo[email]'],
-    };
-
-    // Validate required fields
-    if (!title || !description || !imei || !brand || !phoneModel || !color || !district || !town || !lostLocation || !lostDate || !contactInfo.name || !contactInfo.phone || !contactInfo.email) {
-      return res.status(400).json({ message: 'All fields are required' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: errors.array() 
+      });
     }
 
     // Upload images to Cloudinary if any
@@ -406,19 +475,10 @@ router.post('/', authenticateToken, upload.array('images', 5), async (req, res) 
     }
 
     const postData = {
-      title,
-      description,
-      imei,
-      brand,
-      phoneModel,
-      color,
-      district,
-      town,
-      lostLocation,
-      lostDate: new Date(lostDate),
-      contactInfo,
-      images: uploadedImages,
+      ...req.body,
       author: req.user._id,
+      lostDate: new Date(req.body.lostDate),
+      images: uploadedImages
     };
 
     // If the user is a shop, mark the post as created by a shop
@@ -694,63 +754,6 @@ router.get('/banners', async (req, res) => {
   } catch (error) {
     console.error('Error fetching banners:', error);
     res.status(500).json({ message: 'Failed to fetch banners' });
-  }
-});
-
-// Get all districts (public)
-router.get('/districts', async (req, res) => {
-  try {
-    console.log('Attempting to fetch districts...');
-    // Check if District model is properly loaded
-    if (!District || typeof District.find !== 'function') {
-      console.error('District model is not properly loaded:', District);
-      return res.status(500).json({ 
-        message: 'Server configuration error', 
-        error: 'District model not available'
-      });
-    }
-    
-    // Try a simple query with explicit error handling
-    try {
-      const districts = await District.find({ isActive: true }).sort({ name: 1 });
-      console.log('Districts found:', districts);
-      res.json(districts);
-    } catch (queryError) {
-      console.error('Error in District.find():', queryError);
-      return res.status(500).json({ 
-        message: 'Database query error', 
-        error: queryError.message,
-        stack: process.env.NODE_ENV === 'development' ? queryError.stack : undefined
-      });
-    }
-  } catch (error) {
-    console.error('Error fetching districts:', error);
-    res.status(500).json({ 
-      message: 'Server error', 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
-
-// Get towns by district (public)
-router.get('/towns', async (req, res) => {
-  try {
-    const { districtId } = req.query;
-    
-    let query = { isActive: true };
-    if (districtId) {
-      query.district = districtId;
-    }
-    
-    const towns = await Town.find(query)
-      .populate('district', 'name')
-      .sort({ name: 1 });
-      
-    res.json(towns);
-  } catch (error) {
-    console.error('Error fetching towns:', error);
-    res.status(500).json({ message: 'Server error' });
   }
 });
 

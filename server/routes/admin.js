@@ -195,6 +195,34 @@ router.delete('/shops/:id/reject', async (req, res) => {
   }
 });
 
+// Delete shop
+router.delete('/shops/:id', async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.params.id);
+    
+    if (!shop) {
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+
+    // Get user ID before deleting shop
+    const userId = shop.user;
+
+    // Delete shop
+    await Shop.findByIdAndDelete(req.params.id);
+
+    // Update user role back to regular user if needed
+    // Note: We're not changing the user role here since this is a direct delete
+    // and not a rejection of the shop registration
+
+    res.json({
+      message: 'Shop deleted successfully'
+    });
+  } catch (error) {
+    console.error('Shop deletion error:', error);
+    res.status(500).json({ message: 'Failed to delete shop' });
+  }
+});
+
 // Get all users with pagination and filters
 router.get('/users', async (req, res) => {
   try {
@@ -1344,4 +1372,4 @@ router.delete('/towns/:id', authenticateToken, async (req, res) => {
   }
 });
 
-module.exports = router; 
+module.exports = router;

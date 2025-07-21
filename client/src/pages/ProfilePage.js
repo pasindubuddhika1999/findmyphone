@@ -27,6 +27,7 @@ const ProfilePage = () => {
   const [profileData, setProfileData] = useState({
     username: user?.username || '',
     phoneNumber: user?.phoneNumber || '',
+    email: user?.email || '',
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -101,6 +102,10 @@ const ProfilePage = () => {
 
     if (profileData.phoneNumber && !/^\+?\d{9,15}$/.test(profileData.phoneNumber)) {
       newErrors.phoneNumber = 'Please enter a valid phone number';
+    }
+    
+    if (profileData.email && !/\S+@\S+\.\S+/.test(profileData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
     setErrors(newErrors);
@@ -313,6 +318,7 @@ const ProfilePage = () => {
                         setProfileData({
                           username: user?.username || '',
                           phoneNumber: user?.phoneNumber || '',
+                          email: user?.email || '',
                         });
                         setErrors({});
                       }}
@@ -349,11 +355,16 @@ const ProfilePage = () => {
                   </label>
                   <input
                     type="email"
-                    value={user?.email || ''}
-                    disabled
-                    className="input-field bg-gray-50"
+                    name="email"
+                    value={profileData.email}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    className={`input-field ${!isEditing ? 'bg-gray-50' : ''} ${errors.email ? 'border-red-500' : ''}`}
+                    placeholder="Enter your email address"
                   />
-                  <p className="mt-1 text-sm text-gray-500">Email cannot be changed</p>
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  )}
                 </div>
 
                 <div>

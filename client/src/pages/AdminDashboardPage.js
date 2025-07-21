@@ -270,23 +270,258 @@ const DashboardTab = ({ stats }) => {
 
 // Shops Tab - Redirects to the shops management page
 const ShopsTab = () => {
+  const [shops, setShops] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filter, setFilter] = useState('pending'); // 'all', 'pending', 'approved'
+  const queryClient = useQueryClient();
+
+  // Fetch shops
+  const fetchShops = useQuery(
+    ['adminShops', currentPage, filter],
+    async () => {
+      const params = {
+        page: currentPage,
+        limit: 10,
+        sortBy: 'createdAt',
+        sortOrder: 'desc'
+      };
+
+      if (filter === 'pending') {
+        params.isApproved = false;
+      } else if (filter === 'approved') {
+        params.isApproved = true;
+      }
+
+      const response = await api.getShops(params);
+      return {
+        shops: response.data.shops,
+        totalPages: response.data.totalPages
+      };
+    },
+    {
+      onSuccess: (data) => {
+        setShops(data.shops);
+        setTotalPages(data.totalPages);
+        setLoading(false);
+      },
+      onError: () => {
+        toast.error('Failed to load shops');
+        setLoading(false);
+      }
+    }
+  );
+
+  // Approve shop mutation
+  const approveShopMutation = useMutation(
+    async (shopId) => {
+      return await api.approveShop(shopId);
+    },
+    {
+      onSuccess: () => {
+        toast.success('Shop approved successfully');
+        queryClient.invalidateQueries('adminShops');
+      },
+      onError: () => {
+        toast.error('Failed to approve shop');
+      }
+    }
+  );
+
+  // Reject shop mutation
+  const rejectShopMutation = useMutation(
+    async (shopId) => {
+      return await api.rejectShop(shopId);
+    },
+    {
+      onSuccess: () => {
+        toast.success('Shop rejected successfully');
+        queryClient.invalidateQueries('adminShops');
+      },
+      onError: () => {
+        toast.error('Failed to reject shop');
+      }
+    }
+  );
+
+  // Delete shop mutation
+  const deleteShopMutation = useMutation(
+    async (shopId) => {
+      return await api.deleteShop(shopId);
+    },
+    {
+      onSuccess: () => {
+        toast.success('Shop deleted successfully');
+        queryClient.invalidateQueries('adminShops');
+      },
+      onError: () => {
+        toast.error('Failed to delete shop');
+      }
+    }
+  );
+
+  const handleApprove = (id) => {
+    approveShopMutation.mutate(id);
+  };
+
+  const handleReject = (id) => {
+    if (window.confirm('Are you sure you want to reject this shop? This action cannot be undone.')) {
+      rejectShopMutation.mutate(id);
+    }
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this shop? This action cannot be undone.')) {
+      deleteShopMutation.mutate(id);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  if (loading) return <div>Loading shops...</div>;
+  
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="text-center py-8">
-        <BuildingStorefrontIcon className="h-12 w-12 mx-auto text-gray-400" />
-        <h3 className="mt-2 text-lg font-medium text-gray-900">Shop Management</h3>
-        <p className="mt-1 text-sm text-gray-500">
-          Manage shop registrations, approvals, and more from the dedicated shop management page.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/admin/shops"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Go to Shop Management
-          </Link>
-        </div>
+    <div>
+      <h2 className="text-2xl font-bold mb-6">Shop Management</h2>
+      
+      {/* Filter buttons */}
+      <div className="flex space-x-2 mb-4">
+        <button
+          onClick={() => setFilter('all')}
+          className={`px-4 py-2 rounded ${
+            filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+          }`}
+        >
+          All
+        </button>
+        <button
+          onClick={() => setFilter('pending')}
+          className={`px-4 py-2 rounded ${
+            filter === 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Pending
+        </button>
+        <button
+          onClick={() => setFilter('approved')}
+          className={`px-4 py-2 rounded ${
+            filter === 'approved' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Approved
+        </button>
       </div>
+      
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Shop Name</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
+              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {shops?.length > 0 ? (
+              shops.map(shop => (
+                <tr key={shop._id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{shop.shopName}</div>
+                    <div className="text-xs text-gray-500">{shop.contactNumber}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {shop.ownerName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {shop.location}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {shop.isApproved ? (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Approved
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        Pending
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatDate(shop.createdAt)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <Link
+                      to={`/admin/shops/${shop._id}`}
+                      className="text-blue-600 hover:text-blue-900 mr-4"
+                    >
+                      View
+                    </Link>
+                    {!shop.isApproved && (
+                      <>
+                        <button
+                          onClick={() => handleApprove(shop._id)}
+                          className="text-green-600 hover:text-green-900 mr-4"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleReject(shop._id)}
+                          className="text-red-600 hover:text-red-900 mr-4"
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                    <button
+                      onClick={() => handleDelete(shop._id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                  No shops found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6">
+          <nav className="flex items-center">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded-l border border-gray-300 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <div className="px-4 py-1 border-t border-b border-gray-300 bg-white">
+              {currentPage} of {totalPages}
+            </div>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded-r border border-gray-300 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </nav>
+        </div>
+      )}
     </div>
   );
 };
@@ -1194,12 +1429,10 @@ const LocationManagementTab = () => {
   // Form states
   const [districtForm, setDistrictForm] = useState({
     name: '',
-    code: ''
   });
   const [townForm, setTownForm] = useState({
     name: '',
     districtId: '',
-    code: ''
   });
   
   // Queries for districts and towns
@@ -1230,7 +1463,7 @@ const LocationManagementTab = () => {
       onSuccess: () => {
         toast.success('District created successfully');
         queryClient.invalidateQueries('adminDistricts');
-        setDistrictForm({ name: '', code: '' });
+        setDistrictForm({ name: '' });
         setShowForm(false);
       },
       onError: (error) => {
@@ -1248,7 +1481,7 @@ const LocationManagementTab = () => {
       onSuccess: () => {
         toast.success('District updated successfully');
         queryClient.invalidateQueries('adminDistricts');
-        setDistrictForm({ name: '', code: '' });
+        setDistrictForm({ name: '' });
         setEditingItem(null);
         setShowForm(false);
       },
@@ -1284,7 +1517,7 @@ const LocationManagementTab = () => {
       onSuccess: () => {
         toast.success('Town created successfully');
         queryClient.invalidateQueries('adminTowns');
-        setTownForm({ name: '', districtId: '', code: '' });
+        setTownForm({ name: '', districtId: '' });
         setShowForm(false);
       },
       onError: (error) => {
@@ -1302,7 +1535,7 @@ const LocationManagementTab = () => {
       onSuccess: () => {
         toast.success('Town updated successfully');
         queryClient.invalidateQueries('adminTowns');
-        setTownForm({ name: '', districtId: '', code: '' });
+        setTownForm({ name: '', districtId: '' });
         setEditingItem(null);
         setShowForm(false);
       },
@@ -1354,13 +1587,11 @@ const LocationManagementTab = () => {
     if (subTab === 'districts') {
       setDistrictForm({
         name: item.name,
-        code: item.code
       });
     } else if (subTab === 'towns') {
       setTownForm({
         name: item.name,
         districtId: item.district._id,
-        code: item.code
       });
     }
   };
@@ -1380,9 +1611,9 @@ const LocationManagementTab = () => {
     setShowForm(true);
     
     if (subTab === 'districts') {
-      setDistrictForm({ name: '', code: '' });
+      setDistrictForm({ name: '' });
     } else if (subTab === 'towns') {
-      setTownForm({ name: '', districtId: '', code: '' });
+      setTownForm({ name: '', districtId: '' });
     }
   };
   
@@ -1401,16 +1632,6 @@ const LocationManagementTab = () => {
           type="text"
           value={districtForm.name}
           onChange={(e) => setDistrictForm({...districtForm, name: e.target.value})}
-          className="input-field mt-1"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Code *</label>
-        <input
-          type="text"
-          value={districtForm.code}
-          onChange={(e) => setDistrictForm({...districtForm, code: e.target.value})}
           className="input-field mt-1"
           required
         />
@@ -1460,16 +1681,6 @@ const LocationManagementTab = () => {
           type="text"
           value={townForm.name}
           onChange={(e) => setTownForm({...townForm, name: e.target.value})}
-          className="input-field mt-1"
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Code *</label>
-        <input
-          type="text"
-          value={townForm.code}
-          onChange={(e) => setTownForm({...townForm, code: e.target.value})}
           className="input-field mt-1"
           required
         />
@@ -1535,9 +1746,6 @@ const LocationManagementTab = () => {
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 District Name
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Code
-              </th>
               <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
@@ -1549,9 +1757,6 @@ const LocationManagementTab = () => {
                 <tr key={district._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {district.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {district.code}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
@@ -1571,7 +1776,7 @@ const LocationManagementTab = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="2" className="px-6 py-4 text-center text-gray-500">
                   No districts found. Add a new district to get started.
                 </td>
               </tr>
@@ -1597,9 +1802,6 @@ const LocationManagementTab = () => {
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Town Name
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Code
-              </th>
               <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
@@ -1614,9 +1816,6 @@ const LocationManagementTab = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {town.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {town.code}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
@@ -1636,7 +1835,7 @@ const LocationManagementTab = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
                   No towns found. Add districts first, then create towns.
                 </td>
               </tr>

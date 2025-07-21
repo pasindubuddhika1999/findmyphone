@@ -24,6 +24,7 @@ import ProfilePage from './pages/ProfilePage';
 import ShopProfilePage from './pages/ShopProfilePage';
 import LostPhonesPage from './pages/LostPhonesPage';
 import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 // Components
 import Layout from './components/Layout';
@@ -51,6 +52,7 @@ function App() {
           <Route path="/posts" element={<LostPhonesPage />} />
           <Route path="/posts/:id" element={<PostDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           
           {/* Protected Routes - accessible by both regular users and shops */}
           <Route path="/dashboard" element={

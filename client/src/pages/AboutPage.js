@@ -22,7 +22,7 @@ const AboutPage = () => {
       <section className="text-center py-16 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            About Find My Phone.lk
+            About LostMobile.lk
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Our mission is to help reunite people with their lost phones through a community-driven platform.
@@ -33,7 +33,7 @@ const AboutPage = () => {
       <section className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Mission</h2>
         <p className="text-lg text-gray-700 mb-6">
-          At Find My Phone.lk, we understand the stress and frustration that comes with losing your phone. 
+          At LostMobile.lk, we understand the stress and frustration that comes with losing your phone. 
           That's why we've created a simple yet powerful platform that leverages the power of community to 
           increase the chances of recovering lost devices.
         </p>
