@@ -270,10 +270,10 @@ const DashboardTab = ({ stats }) => {
 
 // Shops Tab - Redirects to the shops management page
 const ShopsTab = () => {
-  const [shops, setShops] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [shops] = useState([]);
+  const [loading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages] = useState(1);
   const [filter, setFilter] = useState('pending'); // 'all', 'pending', 'approved'
   const queryClient = useQueryClient();
 
