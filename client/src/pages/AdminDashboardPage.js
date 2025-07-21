@@ -278,40 +278,40 @@ const ShopsTab = () => {
   const queryClient = useQueryClient();
 
   // Fetch shops
-  const fetchShops = useQuery(
-    ['adminShops', currentPage, filter],
-    async () => {
-      const params = {
-        page: currentPage,
-        limit: 10,
-        sortBy: 'createdAt',
-        sortOrder: 'desc'
-      };
+  // const fetchShops = useQuery(
+  //   ['adminShops', currentPage, filter],
+  //   async () => {
+  //     const params = {
+  //       page: currentPage,
+  //       limit: 10,
+  //       sortBy: 'createdAt',
+  //       sortOrder: 'desc'
+  //     };
 
-      if (filter === 'pending') {
-        params.isApproved = false;
-      } else if (filter === 'approved') {
-        params.isApproved = true;
-      }
+  //     if (filter === 'pending') {
+  //       params.isApproved = false;
+  //     } else if (filter === 'approved') {
+  //       params.isApproved = true;
+  //     }
 
-      const response = await api.getShops(params);
-      return {
-        shops: response.data.shops,
-        totalPages: response.data.totalPages
-      };
-    },
-    {
-      onSuccess: (data) => {
-        setShops(data.shops);
-        setTotalPages(data.totalPages);
-        setLoading(false);
-      },
-      onError: () => {
-        toast.error('Failed to load shops');
-        setLoading(false);
-      }
-    }
-  );
+  //     const response = await api.getShops(params);
+  //     return {
+  //       shops: response.data.shops,
+  //       totalPages: response.data.totalPages
+  //     };
+  //   },
+  //   {
+  //     onSuccess: (data) => {
+  //       setShops(data.shops);
+  //       setTotalPages(data.totalPages);
+  //       setLoading(false);
+  //     },
+  //     onError: () => {
+  //       toast.error('Failed to load shops');
+  //       setLoading(false);
+  //     }
+  //   }
+  // );
 
   // Approve shop mutation
   const approveShopMutation = useMutation(
