@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
+import { useAuth } from "../contexts/AuthContext";
 import {
   PlusIcon,
   PhoneIcon,
   BuildingStorefrontIcon,
   MagnifyingGlassIcon,
   CheckCircleIcon,
-} from '@heroicons/react/24/outline';
-import api from '../services/api';
-import PostCard from '../components/PostCard';
+} from "@heroicons/react/24/outline";
+import api from "../services/api";
+import PostCard from "../components/PostCard";
 
 const DashboardPage = () => {
   const { user } = useAuth();
-  const [statusFilter, setStatusFilter] = useState('all');
-  const isShop = user?.role === 'shop';
+  const [statusFilter, setStatusFilter] = useState("all");
+  const isShop = user?.role === "shop";
 
   const { data: userPosts, isLoading } = useQuery(
-    ['userPosts', statusFilter],
+    ["userPosts", statusFilter],
     async () => {
       const params = new URLSearchParams({
         page: 1,
         limit: 20,
-        ...(statusFilter !== 'all' && { status: statusFilter }),
+        ...(statusFilter !== "all" && { status: statusFilter }),
       });
       const response = await api.get(`/api/posts/user/my-posts?${params}`);
       return response.data;
@@ -32,12 +32,12 @@ const DashboardPage = () => {
 
   // Query for lost phones (for shop dashboard)
   const { data: lostPhones, isLoading: isLoadingLostPhones } = useQuery(
-    ['lostPhones'],
+    ["lostPhones"],
     async () => {
       const params = new URLSearchParams({
         page: 1,
         limit: 10,
-        status: 'active',
+        status: "active",
       });
       const response = await api.get(`/api/posts?${params}`);
       return response.data;
@@ -49,12 +49,15 @@ const DashboardPage = () => {
 
   const getStatusCounts = () => {
     if (!userPosts?.posts) return { active: 0, resolved: 0, total: 0 };
-    
-    const counts = userPosts.posts.reduce((acc, post) => {
-      acc[post.status] = (acc[post.status] || 0) + 1;
-      acc.total += 1;
-      return acc;
-    }, { total: 0 });
+
+    const counts = userPosts.posts.reduce(
+      (acc, post) => {
+        acc[post.status] = (acc[post.status] || 0) + 1;
+        acc.total += 1;
+        return acc;
+      },
+      { total: 0 }
+    );
 
     return counts;
   };
@@ -70,13 +73,11 @@ const DashboardPage = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Shop Dashboard</h1>
             <p className="mt-2 text-gray-600">
-              Welcome, {user?.shop?.shopName || user?.username}! Manage your shop and help find lost phones.
+              Welcome, {user?.shop?.shopName || user?.username}! Manage your
+              shop and help find lost phones.
             </p>
           </div>
-          <Link
-            to="/shop-profile"
-            className="btn-primary mt-4 sm:mt-0"
-          >
+          <Link to="/shop-profile" className="btn-primary mt-4 sm:mt-0">
             <BuildingStorefrontIcon className="h-5 w-5 mr-2" />
             Manage Shop Profile
           </Link>
@@ -107,7 +108,8 @@ const DashboardPage = () => {
           </div>
           <div className="card text-center">
             <div className="text-3xl font-bold text-green-600 mb-2">
-              {userPosts?.posts?.filter(post => post.isShopCreated).length || 0}
+              {userPosts?.posts?.filter((post) => post.isShopCreated).length ||
+                0}
             </div>
             <div className="text-gray-600">Posts Created by Shop</div>
           </div>
@@ -116,9 +118,14 @@ const DashboardPage = () => {
         {/* Shop Created Posts */}
         <div className="card">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Posts Created by Your Shop</h2>
-            
-            <Link to="/create-post" className="flex items-center text-primary-600 hover:text-primary-700 mt-4 sm:mt-0">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Posts Created by Your Shop
+            </h2>
+
+            <Link
+              to="/create-post"
+              className="flex items-center text-primary-600 hover:text-primary-700 mt-4 sm:mt-0"
+            >
               <PlusIcon className="h-5 w-5 mr-1" />
               Create New Post
             </Link>
@@ -134,10 +141,11 @@ const DashboardPage = () => {
                 </div>
               ))}
             </div>
-          ) : userPosts?.posts?.filter(post => post.isShopCreated).length > 0 ? (
+          ) : userPosts?.posts?.filter((post) => post.isShopCreated).length >
+            0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {userPosts.posts
-                .filter(post => post.isShopCreated)
+                .filter((post) => post.isShopCreated)
                 .map((post) => (
                   <PostCard key={post._id} post={post} />
                 ))}
@@ -162,9 +170,14 @@ const DashboardPage = () => {
         {/* Recent Lost Phones Section */}
         <div className="card">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Recent Lost Phone Reports</h2>
-            
-            <Link to="/posts" className="flex items-center text-primary-600 hover:text-primary-700 mt-4 sm:mt-0">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Recent Lost Phone Reports
+            </h2>
+
+            <Link
+              to="/posts"
+              className="flex items-center text-primary-600 hover:text-primary-700 mt-4 sm:mt-0"
+            >
               <MagnifyingGlassIcon className="h-5 w-5 mr-1" />
               Search All Reports
             </Link>
@@ -201,19 +214,29 @@ const DashboardPage = () => {
 
         {/* Shop Guide */}
         <div className="card bg-blue-50 border border-blue-100">
-          <h2 className="text-xl font-bold text-blue-800 mb-4">How You Can Help</h2>
+          <h2 className="text-xl font-bold text-blue-800 mb-4">
+            How You Can Help
+          </h2>
           <ul className="space-y-3 text-blue-700">
             <li className="flex items-start">
               <CheckCircleIcon className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-              <span>When customers bring in phones for repair, check the IMEI against our database</span>
+              <span>
+                When customers bring in phones for repair, check the IMEI
+                against our database
+              </span>
             </li>
             <li className="flex items-start">
               <CheckCircleIcon className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-              <span>If you find a match, contact the owner through the platform</span>
+              <span>
+                If you find a match, contact the owner through the platform
+              </span>
             </li>
             <li className="flex items-start">
               <CheckCircleIcon className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-              <span>Update your shop profile regularly to maintain accurate contact information</span>
+              <span>
+                Update your shop profile regularly to maintain accurate contact
+                information
+              </span>
             </li>
           </ul>
         </div>
@@ -232,10 +255,7 @@ const DashboardPage = () => {
             Welcome back, {user?.username}! Manage your lost phone reports.
           </p>
         </div>
-        <Link
-          to="/create-post"
-          className="btn-primary mt-4 sm:mt-0"
-        >
+        <Link to="/create-post" className="btn-primary mt-4 sm:mt-0">
           <PlusIcon className="h-5 w-5 mr-2" />
           Report Lost Phone
         </Link>
@@ -251,19 +271,19 @@ const DashboardPage = () => {
         </div>
         <div className="card text-center">
           <div className="text-3xl font-bold text-yellow-600 mb-2">
-            {statusCounts.total}
+            {statusCounts.active || 0}
           </div>
           <div className="text-gray-600">Active Reports</div>
         </div>
         <div className="card text-center">
           <div className="text-3xl font-bold text-green-600 mb-2">
-            {statusCounts.total}
+            {statusCounts.resolved || 0}
           </div>
           <div className="text-gray-600">Resolved Cases</div>
         </div>
         <div className="card text-center">
           <div className="text-3xl font-bold text-blue-600 mb-2">
-            {user?.role === 'admin' ? 'Admin' : 'User'}
+            {user?.role === "admin" ? "Admin" : "User"}
           </div>
           <div className="text-gray-600">Account Type</div>
         </div>
@@ -273,17 +293,17 @@ const DashboardPage = () => {
       <div className="card">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">My Reports</h2>
-          
+
           {/* Status Filter */}
           <div className="flex space-x-2 mt-4 sm:mt-0">
-            {['all', 'active', 'resolved'].map((status) => (
+            {["all", "active", "resolved"].map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
                 className={`px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 ${
                   statusFilter === status
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? "bg-primary-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -315,10 +335,9 @@ const DashboardPage = () => {
               No reports found
             </h3>
             <p className="text-gray-600 mb-6">
-              {statusFilter === 'all' 
+              {statusFilter === "all"
                 ? "You haven't created any reports yet."
-                : `No ${statusFilter} reports found.`
-              }
+                : `No ${statusFilter} reports found.`}
             </p>
             <Link to="/create-post" className="btn-primary">
               <PlusIcon className="h-5 w-5 mr-2" />
@@ -336,8 +355,8 @@ const DashboardPage = () => {
                   key={i}
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
                     userPosts.currentPage === i + 1
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-primary-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   {i + 1}
@@ -351,4 +370,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage; 
+export default DashboardPage;

@@ -190,7 +190,7 @@ const Layout = ({ children }) => {
               <Link to="/" className="flex items-center space-x-2">
                 <div className="flex-shrink-0">
                   <img
-                    src="/images/logo.svg"
+                    src="/images/logo.png"
                     alt="Find My Phone.lk Logo"
                     className="h-12 w-auto mobile-logo"
                   />
@@ -428,7 +428,7 @@ const Layout = ({ children }) => {
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <img
-                  src="/images/logo.svg"
+                  src="/images/logo.png"
                   alt="Find My Phone.lk Logo"
                   className="h-12 w-auto mobile-logo"
                 />

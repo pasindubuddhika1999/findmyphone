@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import api from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import api from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 const AdminShopsPage = () => {
   const { user } = useAuth();
@@ -11,7 +11,7 @@ const AdminShopsPage = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [filter, setFilter] = useState('pending'); // 'all', 'pending', 'approved'
+  const [filter, setFilter] = useState("pending"); // 'all', 'pending', 'approved'
 
   const fetchShops = useCallback(async () => {
     try {
@@ -19,13 +19,13 @@ const AdminShopsPage = () => {
       const params = {
         page: currentPage,
         limit: 10,
-        sortBy: 'createdAt',
-        sortOrder: 'desc'
+        sortBy: "createdAt",
+        sortOrder: "desc",
       };
 
-      if (filter === 'pending') {
+      if (filter === "pending") {
         params.isApproved = false;
-      } else if (filter === 'approved') {
+      } else if (filter === "approved") {
         params.isApproved = true;
       }
 
@@ -34,8 +34,8 @@ const AdminShopsPage = () => {
       setTotalPages(response.data.totalPages);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch shops');
-      toast.error('Failed to load shops');
+      setError("Failed to fetch shops");
+      toast.error("Failed to load shops");
       setLoading(false);
     }
   }, [currentPage, filter]);
@@ -47,40 +47,65 @@ const AdminShopsPage = () => {
   const handleApprove = async (id) => {
     try {
       await api.approveShop(id);
-      toast.success('Shop approved successfully');
+      toast.success("Shop approved successfully");
       fetchShops();
     } catch (err) {
-      toast.error('Failed to approve shop');
+      toast.error("Failed to approve shop");
     }
   };
 
   const handleReject = async (id) => {
-    if (window.confirm('Are you sure you want to reject this shop? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        "Are you sure you want to reject this shop? This action cannot be undone."
+      )
+    ) {
       try {
         await api.rejectShop(id);
-        toast.success('Shop rejected successfully');
+        toast.success("Shop rejected successfully");
         fetchShops();
       } catch (err) {
-        toast.error('Failed to reject shop');
+        toast.error("Failed to reject shop");
+      }
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this shop? This action cannot be undone."
+      )
+    ) {
+      try {
+        await api.deleteShop(id);
+        toast.success("Shop deleted successfully");
+        fetchShops();
+      } catch (err) {
+        toast.error("Failed to delete shop");
       }
     }
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
-  if (!user || user.role !== 'admin') {
+  if (!user || user.role !== "admin") {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
-          <p className="mt-2">You do not have permission to access this page.</p>
-          <Link to="/" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <p className="mt-2">
+            You do not have permission to access this page.
+          </p>
+          <Link
+            to="/"
+            className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
             Go Home
           </Link>
         </div>
@@ -94,25 +119,25 @@ const AdminShopsPage = () => {
         <h1 className="text-2xl font-bold">Manage Shops</h1>
         <div className="flex space-x-2">
           <button
-            onClick={() => setFilter('all')}
+            onClick={() => setFilter("all")}
             className={`px-4 py-2 rounded ${
-              filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+              filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
             }`}
           >
             All
           </button>
           <button
-            onClick={() => setFilter('pending')}
+            onClick={() => setFilter("pending")}
             className={`px-4 py-2 rounded ${
-              filter === 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+              filter === "pending" ? "bg-blue-600 text-white" : "bg-gray-200"
             }`}
           >
             Pending
           </button>
           <button
-            onClick={() => setFilter('approved')}
+            onClick={() => setFilter("approved")}
             className={`px-4 py-2 rounded ${
-              filter === 'approved' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+              filter === "approved" ? "bg-blue-600 text-white" : "bg-gray-200"
             }`}
           >
             Approved
@@ -154,7 +179,9 @@ const AdminShopsPage = () => {
                   <td className="py-2 px-4 border-b">{shop.ownerName}</td>
                   <td className="py-2 px-4 border-b">{shop.location}</td>
                   <td className="py-2 px-4 border-b">{shop.contactNumber}</td>
-                  <td className="py-2 px-4 border-b">{formatDate(shop.createdAt)}</td>
+                  <td className="py-2 px-4 border-b">
+                    {formatDate(shop.createdAt)}
+                  </td>
                   <td className="py-2 px-4 border-b">
                     {shop.isApproved ? (
                       <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
@@ -190,6 +217,12 @@ const AdminShopsPage = () => {
                           </button>
                         </>
                       )}
+                      <button
+                        onClick={() => handleDelete(shop._id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -214,7 +247,9 @@ const AdminShopsPage = () => {
               {currentPage} of {totalPages}
             </div>
             <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
               className="px-3 py-1 rounded-r border border-gray-300 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50"
             >
@@ -227,4 +262,4 @@ const AdminShopsPage = () => {
   );
 };
 
-export default AdminShopsPage; 
+export default AdminShopsPage;
