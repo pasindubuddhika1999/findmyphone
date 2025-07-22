@@ -455,7 +455,10 @@ const Layout = ({ children }) => {
                     />
                   </svg>
                 </button>
-                <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                <a
+                  href="https://www.instagram.com/lostmobilesrilanka/"
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
+                >
                   <span className="sr-only">Instagram</span>
                   <svg
                     className="h-6 w-6"
@@ -469,7 +472,7 @@ const Layout = ({ children }) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                </button>
+                </a>
                 <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
                   <span className="sr-only">Twitter</span>
                   <svg
