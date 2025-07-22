@@ -675,7 +675,7 @@ const Layout = ({ children }) => {
           {/* Bottom Section */}
           <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} Find My Phone.lk. All rights
+              &copy; {new Date().getFullYear()} Lost Mobile.lk. All rights
               reserved.
             </p>
             <div className="mt-4 md:mt-0">

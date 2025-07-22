@@ -123,6 +123,11 @@ const AdminBannersPage = () => {
         imageUrl,
       };
 
+      if (!formData.buttonText) {
+        delete bannerData.buttonText;
+        delete bannerData.buttonLink;
+      }
+
       if (editingId) {
         // Update existing banner
         await api.put(`/api/banners/admin/${editingId}`, bannerData, {
@@ -240,7 +245,7 @@ const AdminBannersPage = () => {
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="title"
                 >
-                  Title*
+                  Title
                 </label>
                 <input
                   type="text"
@@ -249,7 +254,7 @@ const AdminBannersPage = () => {
                   value={formData.title}
                   onChange={handleInputChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
+                  placeholder="(Optional) Banner title"
                 />
               </div>
 
@@ -340,9 +345,10 @@ const AdminBannersPage = () => {
                   type="text"
                   id="buttonText"
                   name="buttonText"
-                  value={formData.buttonText}
+                  value={formData.buttonText || ""}
                   onChange={handleInputChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="(Optional) Button text"
                 />
               </div>
 
@@ -357,9 +363,11 @@ const AdminBannersPage = () => {
                   type="text"
                   id="buttonLink"
                   name="buttonLink"
-                  value={formData.buttonLink}
+                  value={formData.buttonLink || ""}
                   onChange={handleInputChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="(Optional) Button link"
+                  disabled={!formData.buttonText}
                 />
               </div>
 

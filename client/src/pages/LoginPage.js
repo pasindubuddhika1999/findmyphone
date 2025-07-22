@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    identifier: '',
-    password: '',
+    identifier: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  
+
   const { login, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/dashboard';
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.identifier) {
-      newErrors.identifier = 'Email or phone number is required';
+      newErrors.identifier = "Email or phone number is required";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     }
 
     setErrors(newErrors);
@@ -34,23 +34,23 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -76,8 +76,11 @@ const LoginPage = () => {
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-1">
-                Email or Phone Number
+              <label
+                htmlFor="identifier"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Phone Number
               </label>
               <input
                 id="identifier"
@@ -87,8 +90,10 @@ const LoginPage = () => {
                 required
                 value={formData.identifier}
                 onChange={handleChange}
-                className={`input-field ${errors.identifier ? 'border-red-500' : ''}`}
-                placeholder="Enter your email or phone number"
+                className={`input-field ${
+                  errors.identifier ? "border-red-500" : ""
+                }`}
+                placeholder="Enter your phone number"
               />
               {errors.identifier && (
                 <p className="mt-1 text-sm text-red-600">{errors.identifier}</p>
@@ -96,19 +101,24 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className={`input-field pr-10 ${errors.password ? 'border-red-500' : ''}`}
+                  className={`input-field pr-10 ${
+                    errors.password ? "border-red-500" : ""
+                  }`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -140,7 +150,7 @@ const LoginPage = () => {
                     Signing in...
                   </div>
                 ) : (
-                  'Sign in'
+                  "Sign in"
                 )}
               </button>
             </div>
@@ -148,7 +158,7 @@ const LoginPage = () => {
 
           <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link
                 to="/register"
                 className="font-medium text-primary-600 hover:text-primary-500"
@@ -157,7 +167,7 @@ const LoginPage = () => {
               </Link>
             </p>
             <p className="text-sm text-gray-600">
-              Are you a shop owner?{' '}
+              Are you a shop owner?{" "}
               <Link
                 to="/register-shop"
                 className="font-medium text-primary-600 hover:text-primary-500"
@@ -172,4 +182,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

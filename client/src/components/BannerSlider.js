@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "../services/api";
 
@@ -118,12 +117,16 @@ const BannerSlider = () => {
                 {banner.subtitle && (
                   <p className="text-lg md:text-xl mb-6">{banner.subtitle}</p>
                 )}
-                <Link
-                  to={banner.buttonLink}
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
-                >
-                  {banner.buttonText}
-                </Link>
+                {banner.buttonText && banner.buttonLink && (
+                  <a
+                    href={banner.buttonLink}
+                    className="btn-primary mt-4 inline-block"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {banner.buttonText}
+                  </a>
+                )}
               </div>
             </div>
           </div>
