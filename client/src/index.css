@@ -6,11 +6,59 @@ html {
   scroll-behavior: smooth;
 }
 
+.site-title {
+  font-family: "Poppins", "Inter", Arial, sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  line-height: 1;
+}
+
+.split-logo {
+  display: inline-flex;
+  font-family: "Poppins", "Inter", Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.03);
+}
+.split-left {
+  background: #e6f1f5;
+  color: #217093;
+  padding: 0.2em 0.6em 0.2em 0.8em;
+  font-weight: 500;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+.split-right {
+  background: #217093;
+  color: #fff;
+  padding: 0.2em 1em 0.2em 0.6em;
+  font-weight: 400;
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .split-logo {
+    font-size: 1.2rem;
+  }
+  .split-left,
+  .split-right {
+    padding: 0.15em 0.5em;
+  }
+}
+
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
   }
-  
+
   body {
     @apply bg-gray-50 text-gray-900;
     overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -22,27 +70,27 @@ html {
   .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
   }
-  
+
   .btn-secondary {
     @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg border border-gray-300 transition-colors duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
   }
-  
+
   .btn-danger {
     @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
   }
-  
+
   .input-field {
     @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200;
   }
-  
+
   .card {
     @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6;
   }
-  
+
   .modal-overlay {
     @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50;
   }
-  
+
   .modal-content {
     @apply bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto;
   }
@@ -52,18 +100,24 @@ html {
   .text-gradient {
     @apply bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent;
   }
-  
+
   .shadow-soft {
-    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07),
+      0 10px 20px -2px rgba(0, 0, 0, 0.04);
   }
-  
+
   /* Mobile text adjustments */
   @media (max-width: 640px) {
     .text-gradient {
       word-break: break-word;
     }
-    
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       word-wrap: break-word;
       hyphens: auto;
     }
@@ -73,25 +127,33 @@ html {
 /* Mobile-specific fixes */
 @media (max-width: 640px) {
   /* Fix text overflow */
-  h1, h2, h3, h4, h5, h6, p, span {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span {
     word-wrap: break-word;
     hyphens: auto;
     max-width: 100%;
     overflow-wrap: break-word;
   }
-  
+
   /* Fix button sizing */
-  .btn-primary, .btn-secondary {
+  .btn-primary,
+  .btn-secondary {
     width: 100%;
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
   }
-  
+
   /* Fix card padding */
   .card {
     padding: 1rem;
   }
-  
+
   /* Fix main content padding */
   main {
     padding-left: 0.75rem;
@@ -99,7 +161,7 @@ html {
     overflow-x: hidden;
     width: 100%;
   }
-  
+
   /* Fix hero section */
   section[class*="py-"] {
     padding-top: 1.5rem;
@@ -107,32 +169,32 @@ html {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
-  
+
   h1[class*="text-"] {
     font-size: 1.75rem;
     line-height: 2rem;
     margin-bottom: 0.75rem;
   }
-  
+
   p[class*="text-"] {
     font-size: 0.875rem;
     line-height: 1.25rem;
     margin-bottom: 1.25rem;
   }
-  
+
   .text-gradient {
     font-size: 1.5rem;
     line-height: 1.75rem;
   }
-  
+
   /* Fix grid layouts */
   .grid {
     grid-template-columns: 1fr;
   }
-  
+
   /* Fix images */
   img {
     max-width: 100%;
     height: auto;
   }
-} 
+}
