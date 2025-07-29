@@ -540,7 +540,7 @@ const Layout = ({ children }) => {
                     FAQs
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
                     Privacy Policy
                   </button>
@@ -549,7 +549,7 @@ const Layout = ({ children }) => {
                   <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
                     Terms of Service
                   </button>
-                </li>
+                </li> */}
                 <li>
                   <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
                     Contact Support
