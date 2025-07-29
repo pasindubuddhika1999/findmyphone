@@ -532,15 +532,15 @@ const Layout = ({ children }) => {
                     How It Works
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     to="/about#faqs"
                     className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
                   >
                     FAQs
                   </Link>
-                </li>
-                {/* <li>
+                </li>  
+                <li>
                   <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
                     Privacy Policy
                   </button>
@@ -551,9 +551,12 @@ const Layout = ({ children }) => {
                   </button>
                 </li> */}
                 <li>
-                  <button className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
-                    Contact Support
-                  </button>
+                  <Link
+                    to="/contact"
+                    className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
+                  >
+                    Contact Support
+                  </Link>
                 </li>
               </ul>
             </div>
